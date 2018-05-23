@@ -1,6 +1,6 @@
-from views import db
 from models import Task
 from datetime import date
+from views import db
 
 db.create_all()
 

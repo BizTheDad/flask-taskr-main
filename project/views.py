@@ -1,15 +1,9 @@
 from forms import AddTaskForm
 
 from functools import wraps
-from flask import Flask, flash, redirect, render_template
+from flask import flash, redirect, render_template
 from flask import request, session, url_for
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-app.config.from_object('_config')
-db = SQLAlchemy(app)
-
-from models import Task
+from models import Task, app, db
 
 
 def login_required(test):
@@ -32,6 +26,7 @@ def logout():
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
         if request.form['username'] != app.config['USERNAME'] \
                 or request.form['password'] != app.config['PASSWORD']:
@@ -41,7 +36,7 @@ def login():
             session['logged_in'] = True
             flash('Welcome!')
             return redirect(url_for('tasks'))
-    return render_template('login.html')
+    return render_template('login.html', form=AddTaskForm(request.form))
 
 
 @app.route('/tasks/')
@@ -82,7 +77,8 @@ def new_task():
 @login_required
 def complete(task_id):
     new_id = task_id
-    db.session.query(Task).filter_by(task_id=new_id).update({"status": "0"})
+    db.session.query(Task).filter_by(task_id=new_id) \
+        .update({"status": "0"})
     db.session.commit()
     flash('The task was marked as complete.')
     return redirect(url_for('tasks'))

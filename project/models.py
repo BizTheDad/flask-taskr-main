@@ -1,4 +1,9 @@
-from views import db
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+
+app = Flask(__name__)
+app.config.from_object('_config')
+db = SQLAlchemy(app)
 
 
 class Task(db.Model):
