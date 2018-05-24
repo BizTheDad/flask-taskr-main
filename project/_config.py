@@ -2,8 +2,6 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-USERNAME = 'admin'
-PASSWORD = 'admin'
 CSRF_ENABLED = True
 SECRET_KEY = os.urandom(24)
 

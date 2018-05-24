@@ -1,9 +1,10 @@
-from forms import AddTaskForm
+from forms import AddTaskForm, RegisterForm, LoginForm
 
 from functools import wraps
 from flask import flash, redirect, render_template
 from flask import request, session, url_for
-from models import Task, app, db
+from models import Task, User, app, db
+import datetime
 
 
 def login_required(test):
@@ -17,6 +18,24 @@ def login_required(test):
     return wrap
 
 
+@app.route('/register/', methods=['GET', 'POST'])
+def register():
+    error = None
+    form = RegisterForm(request.form)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            new_user = User(
+                form.name.data,
+                form.email.data,
+                form.password.data,
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Thanks for registering. Please login.')
+            return redirect(url_for('login'))
+    return render_template('register.html', form=form, error=error)
+
+
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
@@ -27,16 +46,18 @@ def logout():
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
+    form = LoginForm(request.form)
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME'] \
-                or request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid Credentials. Please try again.'
-            return render_template('login.html', error=error)
+        if form.validate_on_submit():
+            user = User.query.filter_by(name=request.form['name']).first()
+            if user is not None and user.password == request.form['password']:
+                session['logged_in'] = True
+                return redirect(url_for('tasks'))
+            else:
+                error = 'Invalid username or password'
         else:
-            session['logged_in'] = True
-            flash('Welcome!')
-            return redirect(url_for('tasks'))
-    return render_template('login.html', form=AddTaskForm(request.form))
+            error = 'Both fields are required'
+    return render_template('login.html', form=form, error=error)
 
 
 @app.route('/tasks/')
@@ -65,6 +86,8 @@ def new_task():
                 form.name.data,
                 form.due_date.data,
                 form.priority.data,
+                datetime.datetime.utcnow(),
+                '1',
                 '1'
             )
             db.session.add(new_task)
