@@ -8,4 +8,3 @@ SECRET_KEY = os.urandom(24)
 DATABASE = 'flask-taskr.db'
 DATABASE_PATH = os.path.join(basedir, DATABASE)
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_PATH
-SQLALCHEMY_TRACK_MODIFICATIONS = False

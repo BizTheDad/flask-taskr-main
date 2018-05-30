@@ -1,6 +1,6 @@
 # import models
 # from datetime import date
-from views import db
+from models import db
 
 db.create_all()
 

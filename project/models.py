@@ -1,10 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
-import datetime
+from views import db
 
-app = Flask(__name__)
-app.config.from_object('_config')
-db = SQLAlchemy(app)
+import datetime
 
 
 class Task(db.Model):
