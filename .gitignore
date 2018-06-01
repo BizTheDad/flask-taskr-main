@@ -103,3 +103,5 @@ ENV/
 .idea/vcs.xml
 .idea/flask-taskr-main.iml
 *.db
+requirements.txt
+project/test.db

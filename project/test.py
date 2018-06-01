@@ -28,7 +28,6 @@ class AllTests(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-
     ########################
     #### helper methods ####
     ########################
@@ -60,7 +59,6 @@ class AllTests(unittest.TestCase):
             posted_date='02/04/2015',
             status='1'
         ), follow_redirects=True)
-
 
     ###############
     #### tests ####
